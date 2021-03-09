@@ -18,7 +18,7 @@ public class MailTest {
 
     @Test
     public void testTextMail() {
-        mailClient.sendMail("2483147040@qq.com", "From Great Bisccuit", "爱你哟，嘻嘻");
+        mailClient.sendMail("1504544146@qq.com", "From Great Bisccuit", "<!DOCTYPE html><html> <head></head><body><h3>前端技术的划分标准</h5></body><ml>");
     }
 
 }
