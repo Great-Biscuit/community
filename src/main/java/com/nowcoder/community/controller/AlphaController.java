@@ -33,23 +33,23 @@ public class AlphaController {
     }
 
     @RequestMapping("http")
-    public void http(HttpServletRequest request, HttpServletResponse response){
+    public void http(HttpServletRequest request, HttpServletResponse response) {
         //获取请求数据
         System.out.println(request.getMethod());
         System.out.println(request.getServletPath());
         Enumeration<String> enumeration = request.getHeaderNames();
-        while (enumeration.hasMoreElements()){
+        while (enumeration.hasMoreElements()) {
             String name = enumeration.nextElement();
             String value = request.getHeader(name);
-            System.out.println(name+": "+value);
+            System.out.println(name + ": " + value);
         }
         System.out.println(request.getParameter("code"));
 
         //返回响应数据
         response.setContentType("text/html;charset=utf-8");
-        try(
+        try (
                 PrintWriter writer = response.getWriter();
-                ) {
+        ) {
             writer.write("<h1>牛客网</h1>");
         } catch (IOException e) {
             e.printStackTrace();
@@ -61,11 +61,11 @@ public class AlphaController {
 
 
     // /student?current=1&limit=20
-    @RequestMapping(path = "/students",method = RequestMethod.GET)
+    @RequestMapping(path = "/students", method = RequestMethod.GET)
     @ResponseBody
     public String getStudents(
-            @RequestParam(name = "current",required = false,defaultValue = "1") int current,
-            @RequestParam(name = "limit",required = false,defaultValue = "10") int limit){
+            @RequestParam(name = "current", required = false, defaultValue = "1") int current,
+            @RequestParam(name = "limit", required = false, defaultValue = "10") int limit) {
 
         System.out.println(current);
         System.out.println(limit);
@@ -73,71 +73,73 @@ public class AlphaController {
     }
 
     // /student/123  参数是路径的一部分
-    @RequestMapping(path = "/student/{id}",method = RequestMethod.GET)
+    @RequestMapping(path = "/student/{id}", method = RequestMethod.GET)
     @ResponseBody
-    public String getStudent(@PathVariable("id")int id){
+    public String getStudent(@PathVariable("id") int id) {
         System.out.println(id);
         return "a student";
     }
 
     //POST请求 提交数据
-    @RequestMapping(path = "/student",method = RequestMethod.POST)
+    @RequestMapping(path = "/student", method = RequestMethod.POST)
     @ResponseBody
-    public String saveStudent(String name,int age) {
+    public String saveStudent(String name, int age) {
         System.out.println(name);
         System.out.println(age);
         return "success";
     }
 
     //响应HTML数据
-    @RequestMapping(path = "/teacher" , method = RequestMethod.GET)
+    @RequestMapping(path = "/teacher", method = RequestMethod.GET)
     public ModelAndView getTeacher() {
         ModelAndView mav = new ModelAndView();
-        mav.addObject("name","张三");
-        mav.addObject("age","30");
+        mav.addObject("name", "张三");
+        mav.addObject("age", "30");
         mav.setViewName("/demo/view");
         return mav;
     }
-    @RequestMapping(path = "/school" , method = RequestMethod.GET)
+
+    @RequestMapping(path = "/school", method = RequestMethod.GET)
     public String getSchool(Model model) {
-        model.addAttribute("name","CSUFT");
-        model.addAttribute("age",62);
+        model.addAttribute("name", "CSUFT");
+        model.addAttribute("age", 62);
         return "/demo/view";
     }
 
     //响应JSON数据（异步请求中常用）
     //Java对象 ->JSON字符串 ->JS对象
-    @RequestMapping(path = "/emp" , method = RequestMethod.GET)
+    @RequestMapping(path = "/emp", method = RequestMethod.GET)
     @ResponseBody
-    public Map<String,Object> getEmp() {
-        Map<String,Object> emp = new HashMap<>();
-        emp.put("name","zhangsan");
-        emp.put("age",23);
-        emp.put("salary",8000);
+    public Map<String, Object> getEmp() {
+        Map<String, Object> emp = new HashMap<>();
+        emp.put("name", "zhangsan");
+        emp.put("age", 23);
+        emp.put("salary", 8000);
         return emp;
     }
+
     //多个
-    @RequestMapping(path = "/emps" , method = RequestMethod.GET)
+    @RequestMapping(path = "/emps", method = RequestMethod.GET)
     @ResponseBody
-    public List<Map<String,Object>> getEmps() {
-        List<Map<String,Object>> list = new ArrayList<>();
+    public List<Map<String, Object>> getEmps() {
+        List<Map<String, Object>> list = new ArrayList<>();
 
-        Map<String,Object> emp = new HashMap<>();
-        emp.put("name","zhangsan");
-        emp.put("age",23);
-        emp.put("salary",8000);
+        Map<String, Object> emp = new HashMap<>();
+        emp.put("name", "zhangsan");
+        emp.put("age", 23);
+        emp.put("salary", 8000);
         list.add(emp);
 
         emp = new HashMap<>();
-        emp.put("name","lisi");
-        emp.put("age",22);
-        emp.put("salary",9000.00);
+        emp.put("name", "lisi");
+        emp.put("age", 22);
+        emp.put("salary", 9000.00);
         list.add(emp);
 
         emp = new HashMap<>();
-        emp.put("name","wangwu");
-        emp.put("age",25);
-        emp.put("salary",10000.00);
+        emp.put("name", "wangwu");
+        emp.put("age", 25);
+        emp.put("salary", 10000.00);
         list.add(emp);
 
         return list;
