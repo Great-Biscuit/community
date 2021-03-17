@@ -1,22 +1,38 @@
 package com.nowcoder.community.controller;
 
+import com.google.code.kaptcha.Producer;
 import com.nowcoder.community.entity.User;
 import com.nowcoder.community.service.UserService;
 import com.nowcoder.community.util.CommunityConstant;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Writer;
 import java.util.Map;
 
 @Controller
 public class LoginController implements CommunityConstant {
 
+    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private Producer kaptchaProducer;
 
     @RequestMapping(path = "/register", method = RequestMethod.GET)
     public String getRegisterPage() {
@@ -59,6 +75,27 @@ public class LoginController implements CommunityConstant {
             model.addAttribute("target", "/index");
         }
         return "/site/operate-result";
+    }
+
+    @GetMapping("/kaptcha")
+    public void getKaptcha(HttpServletResponse response, HttpSession session) {
+        //生成验证码
+        String text = kaptchaProducer.createText();
+        BufferedImage image = kaptchaProducer.createImage(text);
+
+        //将验证码存入Session
+        session.setAttribute("kaptcha", text);
+
+        //将图片输出给浏览器
+        response.setContentType("image/png");
+        try {
+            OutputStream outputStream = response.getOutputStream();
+            //这个流不用关，SpringMVC进行了管理，会自动关
+            ImageIO.write(image, "png", outputStream);
+        } catch (IOException e) {
+            logger.error("响应验证码失败" + e.getMessage());
+        }
+
     }
 
 }
