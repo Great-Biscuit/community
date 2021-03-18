@@ -126,4 +126,10 @@ public class LoginController implements CommunityConstant {
         }
     }
 
+    @GetMapping("loginOut")
+    public String loginOut(@CookieValue("ticket") String ticket) {
+        userService.loginOut(ticket);
+        return "redirect:/login";
+    }
+
 }
