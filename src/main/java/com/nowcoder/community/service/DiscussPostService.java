@@ -41,4 +41,11 @@ public class DiscussPostService {
 
     }
 
+    /**
+     * 根据ID查询帖子
+     */
+    public DiscussPost findDiscussPortById(int id) {
+        return discussPostMapper.selectDiscussPortById(id);
+    }
+
 }
