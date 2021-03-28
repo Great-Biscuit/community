@@ -24,6 +24,7 @@ public class AlphaController {
     @RequestMapping("/hello")
     @ResponseBody
     public String sayHello() {
+        Integer.valueOf("abc");
         return "Hello Spring Boot.";
     }
 

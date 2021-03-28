@@ -1,7 +1,7 @@
 package com.nowcoder.community.controller.interceptor;
 
-import com.nowcoder.community.annotation.LoginRequired;
 import com.nowcoder.community.util.HostHolder;
+import com.nowcoder.community.annotation.LoginRequired;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;

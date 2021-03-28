@@ -1,8 +1,8 @@
 package com.nowcoder.community.controller;
 
-import com.google.code.kaptcha.Producer;
 import com.nowcoder.community.entity.User;
 import com.nowcoder.community.service.UserService;
+import com.google.code.kaptcha.Producer;
 import com.nowcoder.community.util.CommunityConstant;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
