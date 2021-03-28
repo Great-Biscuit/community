@@ -21,4 +21,7 @@ public interface DiscussPostMapper {
     //查询帖子
     DiscussPost selectDiscussPortById(int id);
 
+    //更新评论数
+    int updateCommentCount(int id, int commentCount);
+
 }

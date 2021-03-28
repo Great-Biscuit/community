@@ -93,7 +93,7 @@ public class DiscussPostController implements CommunityConstant {
                         //作者
                         replyVo.put("user", userService.findUserById(reply.getUserId()));
                         //回复目标
-                        User target = reply.getTargetId() == 0 ? null : userService.findUserById(reply.getUserId());
+                        User target = reply.getTargetId() == 0 ? null : userService.findUserById(reply.getTargetId());
                         replyVo.put("target", target);
 
                         replyVoList.add(replyVo);
