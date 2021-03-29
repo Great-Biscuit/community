@@ -4,7 +4,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.core.BoundValueOperations;
+import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.SessionCallback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -88,6 +92,40 @@ public class RedisTest {
         redisTemplate.expire("test:students", 10, TimeUnit.SECONDS);
 
 
+    }
+
+    //多次访问同一个key
+    @Test
+    public void testBoundOperations() {
+        String redisKey = "test:count";
+        BoundValueOperations operations = redisTemplate.boundValueOps(redisKey);
+
+        operations.increment();
+        operations.increment();
+        operations.increment();
+        operations.increment();
+        operations.increment();
+
+        System.out.println(operations.get());
+    }
+
+    //事务:执行命令时不会立即执行，而是放在队列里，提交时才一次性执行，所以不能查
+    @Test
+    public void testTransactional() {
+        Object object = redisTemplate.execute(new SessionCallback() {
+            @Override
+            public Object execute(RedisOperations redisOperations) throws DataAccessException {
+                String redisKey = "test:tx";
+
+                redisOperations.multi();//启用事务
+
+                redisOperations.opsForSet().add(redisKey, "zhangsan", "lisi", "wangwu");
+                System.out.println(redisOperations.opsForSet().members(redisKey));
+
+                return redisOperations.exec();//提交事务
+            }
+        });
+        System.out.println(object);
     }
 
 
