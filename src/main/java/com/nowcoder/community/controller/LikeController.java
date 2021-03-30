@@ -27,16 +27,17 @@ public class LikeController {
      *
      * @param entityType
      * @param entityId
+     * @param entityUserId
      * @return
      */
     @PostMapping("/like")
     @ResponseBody
-    public String like(int entityType, int entityId) {
+    public String like(int entityType, int entityId, int entityUserId) {
         User user = hostHolder.getUser();
         //不用判断user有没有值了，之后spring安全会进行拦截
 
         //点赞
-        likeService.like(user.getId(), entityType, entityId);
+        likeService.like(user.getId(), entityType, entityId, entityUserId);
         //数量
         long likeCount = likeService.findEntityLikeCount(entityType, entityId);
         //状态
