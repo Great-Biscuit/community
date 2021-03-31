@@ -16,6 +16,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.List;
+import java.util.Map;
+
 @Controller
 public class FollowController implements CommunityConstant {
 
@@ -67,8 +70,52 @@ public class FollowController implements CommunityConstant {
         page.setPath("/followees/" + userId);
         page.setRows((int) followService.findFolloweeCount(userId, ENTITY_TYPE_USER));
 
-        return "";
+        List<Map<String, Object>> userList = followService.findFollowees(userId, page.getOffset(), page.getLimit());
+        if (userList != null) {
+            for (Map<String, Object> map : userList) {
+                User u = (User) map.get("user");
+                map.put("hasFollowed", hasFollowed(u.getId()));
+            }
+        }
+        model.addAttribute("users", userList);
 
+        return "/site/followee";
+
+    }
+
+    /**
+     * userId被谁关注了
+     */
+    @GetMapping("/followers/{userId}")
+    public String getFollowers(@PathVariable int userId, Page page, Model model) {
+        User user = userService.findUserById(userId);
+        if (user == null) {
+            throw new RuntimeException("该用户不存在!");
+        }
+        model.addAttribute("user", user);
+
+        page.setLimit(5);
+        page.setPath("/followers/" + userId);
+        page.setRows((int) followService.findFollowerCount(ENTITY_TYPE_USER, userId));
+
+        List<Map<String, Object>> userList = followService.findFollowers(userId, page.getOffset(), page.getLimit());
+        if (userList != null) {
+            for (Map<String, Object> map : userList) {
+                User u = (User) map.get("user");
+                map.put("hasFollowed", hasFollowed(u.getId()));
+            }
+        }
+        model.addAttribute("users", userList);
+
+        return "/site/follower";
+
+    }
+
+    private boolean hasFollowed(int userId) {
+        if (hostHolder.getUser() == null) {
+            return false;
+        }
+        return followService.hasFollowed(hostHolder.getUser().getId(), CommunityConstant.ENTITY_TYPE_USER, userId);
     }
 
 }
