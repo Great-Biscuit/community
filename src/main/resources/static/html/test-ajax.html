@@ -7,6 +7,7 @@
 <body>
 <p>
     <input type="button" value="发送" onclick="send();">
+    <input type="button" value="cao" onclick="sayHello();">
 </p>
 <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
 <script>
@@ -24,6 +25,10 @@
                 console.log(data.msg);
             }
         );
+    }
+
+    function sayHello() {
+        alert("hello");
     }
 </script>
 </body>
