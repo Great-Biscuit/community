@@ -23,7 +23,7 @@ public class MailTest {
 
     @Test
     public void testTextMail() {
-        mailClient.sendMail("xxx@qq.com", "From Great Bisccuit", "hello");
+        mailClient.sendMail("318215104@qq.com", "From Great Bisccuit", "hello");
     }
 
     @Test
