@@ -48,6 +48,7 @@ public class LikeService {
                 return redisOperations.exec();
             }
         });
+
     }
 
     /**

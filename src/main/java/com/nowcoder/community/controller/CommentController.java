@@ -26,7 +26,7 @@ public class CommentController {
         comment.setUserId(hostHolder.getUser().getId());
         comment.setStatus(0);
         comment.setCreateTime(new Date());
-        commentService.addComment(comment);
+        commentService.addComment(comment, discussPostId);
 
         return "redirect:/discuss/detail/" + discussPostId;
     }
