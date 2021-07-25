@@ -12,7 +12,7 @@ public interface DiscussPostMapper {
     //userId不是0才用  用动态sql
     List<DiscussPost> selectDiscussPosts(int userId, int offset, int limit);
 
-    //@Param  别名   动态sql的条件要用这个参数且只有一个参数就必须要别名
+    //@Param  别名   动态sql的条件要用这个参数，且只有一个参数并且在<if>里就必须要别名
     int selectDiscussPostRows(@Param("userId") int userId);
 
     //增加帖子
@@ -23,5 +23,11 @@ public interface DiscussPostMapper {
 
     //更新评论数
     int updateCommentCount(int id, int commentCount);
+
+    //修改帖子类型
+    int updateType(int id, int type);
+
+    //修改帖子状态
+    int updateStatus(int id, int status);
 
 }

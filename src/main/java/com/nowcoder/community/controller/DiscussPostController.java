@@ -150,4 +150,54 @@ public class DiscussPostController implements CommunityConstant {
         return "/site/discuss-detail";
     }
 
+    //置顶帖子
+    @PostMapping("/top")
+    @ResponseBody
+    public String setTop(int id) {
+        discussPostService.updateType(id, 1);//1为置顶
+        //因为改完要更新，所以触发发帖事件
+        //触发发帖事件
+        Event event = new Event()
+                .setTopic(TOPIC_PUBLISH)
+                .setUserId(hostHolder.getUser().getId())
+                .setEntityTpye(ENTITY_TYPE_POST)
+                .setEntityId(id);
+        eventProducer.fireEvent(event);
+
+        return CommunityUtil.getJSONString(0);
+    }
+
+    //加精帖子
+    @PostMapping("/wonderful")
+    @ResponseBody
+    public String setWonderful(int id) {
+        discussPostService.updateStatus(id, 1);//0-正常，1-加精，2-拉黑
+        //因为改完要更新，所以触发发帖事件
+        //触发发帖事件
+        Event event = new Event()
+                .setTopic(TOPIC_PUBLISH)
+                .setUserId(hostHolder.getUser().getId())
+                .setEntityTpye(ENTITY_TYPE_POST)
+                .setEntityId(id);
+        eventProducer.fireEvent(event);
+
+        return CommunityUtil.getJSONString(0);
+    }
+
+    //删除帖子
+    @PostMapping("/delete")
+    @ResponseBody
+    public String setDelete(int id) {
+        discussPostService.updateStatus(id, 2);//0-正常，1-加精，2-拉黑
+        //删完要从ES里删除，所以触发删帖事件
+        Event event = new Event()
+                .setTopic(TOPIC_DELETE)
+                .setUserId(hostHolder.getUser().getId())
+                .setEntityTpye(ENTITY_TYPE_POST)
+                .setEntityId(id);
+        eventProducer.fireEvent(event);
+
+        return CommunityUtil.getJSONString(0);
+    }
+
 }
