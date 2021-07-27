@@ -4,6 +4,7 @@ import com.nowcoder.community.util.HostHolder;
 import com.nowcoder.community.entity.Comment;
 import com.nowcoder.community.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
