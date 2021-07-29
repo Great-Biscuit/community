@@ -8,6 +8,8 @@ import com.nowcoder.community.service.UserService;
 import com.nowcoder.community.util.CommunityConstant;
 import com.nowcoder.community.util.CommunityUtil;
 import com.nowcoder.community.util.HostHolder;
+import com.qiniu.util.Auth;
+import com.qiniu.util.StringMap;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,12 +54,54 @@ public class UserController implements CommunityConstant {
     @Autowired
     private HostHolder hostHolder;
 
+    @Value("${qiniu.key.access}")
+    private String accessKey;
+
+    @Value("${qiniu.key.secret}")
+    private String secretKey;
+
+    @Value("${qiniu.bucket.header.name}")
+    private String headerBucketName;
+
+    @Value("${qiniu.bucket.header.url}")
+    private String headerBucketUrl;
+
     @LoginRequired
     @GetMapping("/setting")
-    public String getSettingPage() {
+    public String getSettingPage(Model model) {
+        //生成文件名
+        String fileName = CommunityUtil.generateUUID();
+
+        //设置响应信息
+        StringMap policy = new StringMap();
+        policy.put("returnBody", CommunityUtil.getJSONString(0));
+
+        //生成七牛云上传凭证
+        Auth auth = Auth.create(accessKey, secretKey);
+        String uploadToken = auth.uploadToken(headerBucketName, fileName, 3600, policy);
+
+        //将凭证发给模板
+        model.addAttribute("uploadToken", uploadToken);
+        //文件名传给模板
+        model.addAttribute("fileName", fileName);
+
         return "/site/setting";
     }
 
+    //更新头像路径
+    @PostMapping("/header/url")
+    @ResponseBody
+    public String updateHeaderUrl(String fileName) {
+        if (StringUtils.isBlank(fileName)) {
+            return CommunityUtil.getJSONString(1, "文件名不能为空!");
+        }
+        String url = headerBucketUrl + "/" + fileName;
+        userService.updateHeader(hostHolder.getUser().getId(), url);
+        return CommunityUtil.getJSONString(0);
+    }
+
+
+    //废弃，将图片传到七牛云
     @LoginRequired
     @PostMapping("/upload")
     public String uploadHeader(MultipartFile headerImage, Model model) {
@@ -94,6 +138,7 @@ public class UserController implements CommunityConstant {
         return "redirect:/index";
     }
 
+    //废弃，将图片传到七牛云
     @GetMapping("/header/{fileName}")
     public void getHeader(@PathVariable("fileName") String fileName, HttpServletResponse response) {
         // 服务器存放路径
@@ -115,6 +160,7 @@ public class UserController implements CommunityConstant {
             logger.error("读取头像失败: " + e.getMessage());
         }
     }
+
 
     @LoginRequired
     @PostMapping("/update_password")
