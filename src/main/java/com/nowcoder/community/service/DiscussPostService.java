@@ -85,18 +85,18 @@ public class DiscussPostService {
     private SensitiveFilter sensitiveFilter;
 
     public List<DiscussPost> findDiscussPosts(int userId, int offset, int limit, int orderMode) {
-        if (userId == 0 && orderMode == 1) {//访问首页的时候userId不传，为0
-            return postListCache.get(offset + ":" + limit);
-        }
+//        if (userId == 0 && orderMode == 1) {//访问首页的时候userId不传，为0
+//            return postListCache.get(offset + ":" + limit);
+//        }
         //访问数据库
         logger.debug("Load post list from DB.");
         return discussPostMapper.selectDiscussPosts(userId, offset, limit, orderMode);
     }
 
     public int findDiscussPostRows(int userId) {
-        if (userId == 0) {//访问首页的时候userId不传，为0
-            return postRowsCache.get(userId);
-        }
+//        if (userId == 0) {//访问首页的时候userId不传，为0
+//            return postRowsCache.get(userId);
+//        }
         //访问数据库
         logger.debug("Load post rows from DB.");
         return discussPostMapper.selectDiscussPostRows(userId);
